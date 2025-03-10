@@ -5,7 +5,6 @@ O padrão de projeto **Decorator** permite adicionar funcionalidades a um objeto
 
 Neste exemplo, utilizamos o **Decorator** para adicionar funcionalidades extras a um carro, como ar-condicionado e sistema de som premium.
 
----
 
 ## UML do Decorator (Mermaid)
 
