@@ -139,7 +139,6 @@ public class SomPremiumDecorator extends DecoradorCarro {
 }
 ```
 
----
 
 ## Implementação do Cliente (Main)
 ```java
@@ -157,7 +156,6 @@ public class Main {
 }
 ```
 
----
 
 ## Explicação do Código
 1. **Criamos a interface Carro**, que define os métodos `descricao()` e `custo()`.
@@ -166,7 +164,6 @@ public class Main {
 4. **Criamos ArCondicionadoDecorator e SomPremiumDecorator**, que adicionam funcionalidades ao carro sem modificar a classe original.
 5. **O cliente pode empilhar os decoradores**, como adicionar ar-condicionado e sistema de som dinamicamente.
 
----
 
 ## Participantes
 
