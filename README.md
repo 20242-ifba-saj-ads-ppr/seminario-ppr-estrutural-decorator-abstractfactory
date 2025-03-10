@@ -3,121 +3,144 @@
 ## Motivação
 O padrão de projeto **Decorator** permite adicionar funcionalidades a um objeto de forma dinâmica, sem modificar sua estrutura original. Ele funciona ao encapsular um objeto dentro de outro, permitindo um número ilimitado de responsabilidades adicionais.
 
-Neste exemplo, utilizamos o **Decorator** para adicionar funcionalidades extras a um componente de texto, como negrito e sublinhado.
+Neste exemplo, utilizamos o **Decorator** para adicionar funcionalidades extras a um carro, como ar-condicionado e sistema de som premium.
 
+---
 
-## UML do Decorator 
+## UML do Decorator (Mermaid)
 
 ```mermaid
 classDiagram
-    class ComponenteTexto {
-        +exibir(): String
+    class Carro {
+        +descricao(): String
+        +custo(): double
     }
-    class TextoSimples {
-        +exibir(): String
+    class CarroBasico {
+        +descricao(): String
+        +custo(): double
     }
-    class DecoradorTexto {
-        +exibir(): String
+    class DecoradorCarro {
+        +descricao(): String
+        +custo(): double
     }
-    class NegritoDecorator {
-        +exibir(): String
+    class ArCondicionadoDecorator {
+        +descricao(): String
+        +custo(): double
     }
-    class SublinhadoDecorator {
-        +exibir(): String
+    class SomPremiumDecorator {
+        +descricao(): String
+        +custo(): double
     }
     
-    ComponenteTexto <|-- TextoSimples
-    ComponenteTexto <|-- DecoradorTexto
-    DecoradorTexto <|-- NegritoDecorator
-    DecoradorTexto <|-- SublinhadoDecorator
-    DecoradorTexto --> ComponenteTexto
+    Carro <|-- CarroBasico
+    Carro <|-- DecoradorCarro
+    DecoradorCarro <|-- ArCondicionadoDecorator
+    DecoradorCarro <|-- SomPremiumDecorator
+    DecoradorCarro --> Carro
 ```
+
 
 ## Código do Decorator
 
-### Interface ComponenteTexto
+### Interface Carro
 ```java
 package decorator;
 
-public interface ComponenteTexto {
-    String exibir();
+public interface Carro {
+    String descricao();
+    double custo();
 }
 ```
 
 ### Implementação do Componente Concreto
 
-#### TextoSimples
+#### CarroBasico
 ```java
 package decorator;
 
-public class TextoSimples implements ComponenteTexto {
-    private String texto;
-
-    public TextoSimples(String texto) {
-        this.texto = texto;
+public class CarroBasico implements Carro {
+    @Override
+    public String descricao() {
+        return "Carro básico";
     }
 
     @Override
-    public String exibir() {
-        return texto;
+    public double custo() {
+        return 20000.0;
     }
 }
 ```
 
 ### Implementação do Decorador Base
 
-#### DecoradorTexto
+#### DecoradorCarro
 ```java
 package decorator;
 
-public abstract class DecoradorTexto implements ComponenteTexto {
-    protected ComponenteTexto componente;
+public abstract class DecoradorCarro implements Carro {
+    protected Carro carro;
 
-    public DecoradorTexto(ComponenteTexto componente) {
-        this.componente = componente;
+    public DecoradorCarro(Carro carro) {
+        this.carro = carro;
     }
 
     @Override
-    public String exibir() {
-        return componente.exibir();
+    public String descricao() {
+        return carro.descricao();
+    }
+
+    @Override
+    public double custo() {
+        return carro.custo();
     }
 }
 ```
 
 ### Implementação dos Decoradores Específicos
 
-#### NegritoDecorator
+#### ArCondicionadoDecorator
 ```java
 package decorator;
 
-public class NegritoDecorator extends DecoradorTexto {
-    public NegritoDecorator(ComponenteTexto componente) {
-        super(componente);
+public class ArCondicionadoDecorator extends DecoradorCarro {
+    public ArCondicionadoDecorator(Carro carro) {
+        super(carro);
     }
 
     @Override
-    public String exibir() {
-        return "<b>" + super.exibir() + "</b>";
+    public String descricao() {
+        return super.descricao() + ", Ar-condicionado";
+    }
+
+    @Override
+    public double custo() {
+        return super.custo() + 2500.0;
     }
 }
 ```
 
-#### SublinhadoDecorator
+#### SomPremiumDecorator
 ```java
 package decorator;
 
-public class SublinhadoDecorator extends DecoradorTexto {
-    public SublinhadoDecorator(ComponenteTexto componente) {
-        super(componente);
+public class SomPremiumDecorator extends DecoradorCarro {
+    public SomPremiumDecorator(Carro carro) {
+        super(carro);
     }
 
     @Override
-    public String exibir() {
-        return "<u>" + super.exibir() + "</u>";
+    public String descricao() {
+        return super.descricao() + ", Som Premium";
+    }
+
+    @Override
+    public double custo() {
+        return super.custo() + 1800.0;
     }
 }
 ```
 
+---
 
 ## Implementação do Cliente (Main)
 ```java
@@ -125,37 +148,40 @@ package decorator;
 
 public class Main {
     public static void main(String[] args) {
-        ComponenteTexto texto = new TextoSimples("Olá, Mundo!");
-        ComponenteTexto textoNegrito = new NegritoDecorator(texto);
-        ComponenteTexto textoSublinhado = new SublinhadoDecorator(textoNegrito);
+        Carro carroBasico = new CarroBasico();
+        Carro carroComAr = new ArCondicionadoDecorator(carroBasico);
+        Carro carroCompleto = new SomPremiumDecorator(carroComAr);
 
-        System.out.println(textoSublinhado.exibir());
+        System.out.println("Descrição: " + carroCompleto.descricao());
+        System.out.println("Custo total: R$ " + carroCompleto.custo());
     }
 }
 ```
 
+---
+
 ## Explicação do Código
-1. **Criamos a interface ComponenteTexto**, que define o método `exibir()`.
-2. **Implementamos TextoSimples**, que representa um texto básico.
-3. **Criamos o DecoradorTexto**, que encapsula outro `ComponenteTexto`.
-4. **Criamos NegritoDecorator e SublinhadoDecorator**, que adicionam funcionalidade ao texto sem modificar a classe original.
-5. **O cliente pode empilhar os decoradores**, como adicionar negrito e sublinhado dinamicamente.
+1. **Criamos a interface Carro**, que define os métodos `descricao()` e `custo()`.
+2. **Implementamos CarroBasico**, que representa um carro padrão sem opcionais.
+3. **Criamos o DecoradorCarro**, que encapsula outro `Carro`.
+4. **Criamos ArCondicionadoDecorator e SomPremiumDecorator**, que adicionam funcionalidades ao carro sem modificar a classe original.
+5. **O cliente pode empilhar os decoradores**, como adicionar ar-condicionado e sistema de som dinamicamente.
 
-
+---
 
 ## Participantes
 
-- **Componente (ComponenteTexto)**
+- **Componente (Carro)**
   - Define a interface para os objetos que podem ter responsabilidades adicionais.
 
-- **Componente Concreto (TextoSimples)**
+- **Componente Concreto (CarroBasico)**
   - Implementa a interface base sem modificações adicionais.
 
-- **Decorator (DecoradorTexto)**
+- **Decorator (DecoradorCarro)**
   - Mantém uma referência ao componente e delega chamadas a ele.
 
-- **Decoradores Concretos (NegritoDecorator, SublinhadoDecorator)**
+- **Decoradores Concretos (ArCondicionadoDecorator, SomPremiumDecorator)**
   - Adicionam funcionalidade ao objeto dinamicamente.
 
 - **Cliente (Main)**
-  - Encapsula um `ComponenteTexto` dentro de múltiplos decoradores para adicionar funcionalidades.
+  - Encapsula um `Carro` dentro de múltiplos decoradores para adicionar funcionalidades.
